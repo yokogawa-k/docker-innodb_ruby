@@ -29,10 +29,12 @@ jobs:
             apk add --no-cache curl
             curl -L https://storage.googleapis.com/container-structure-test/latest/container-structure-test -o /usr/local/bin/container-structure-test
             chmod +x /usr/local/bin/container-structure-test
+            mkdir /lib64 
+            ln -s /lib/libc.musl-x86_64.so.1 /lib64/ld-linux-x86-64.so.2
       - run:
           name: Run spec
           command: |
-            /app/spec/spec.sh
+            spec/spec.sh
       - run:
           name: Save Docker image layer cache
           command: |
