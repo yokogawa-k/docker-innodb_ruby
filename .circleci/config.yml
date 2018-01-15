@@ -32,7 +32,7 @@ jobs:
       - run:
           name: Run spec
           command: |
-            spec/spec.sh
+            /app/spec/spec.sh
       - run:
           name: Save Docker image layer cache
           command: |
