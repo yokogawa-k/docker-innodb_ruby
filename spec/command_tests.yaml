@@ -1,0 +1,23 @@
+schemaVersion: "2.0.0"
+
+globalEnvVars:
+# - key: "PATH"
+#   value: "/env/bin:$PATH"
+  - key: 
+CommandTests:
+  - name: "innodb_log installation"
+    command: "which"
+    args: ["innodb_log"]
+    expectedOutput: ["/usr/local/bundle/bin/innodb_log"]
+  - name: "innodb_log help"
+    command: "innodb_log"
+    args: ["--help"]
+    expectedOutput: ["Usage: innodb_log"]
+  - name: "innodb_space installation"
+    command: "which"
+    args: ["innodb_space"]
+    expectedOutput: ["/usr/local/bundle/bin/innodb_space"]
+  - name: "innodb_space help"
+    command: "innodb_space"
+    args: ["--help"]
+    expectedOutput: ["Usage: innodb_space"]

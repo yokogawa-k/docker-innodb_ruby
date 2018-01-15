@@ -1,0 +1,50 @@
+version: 2
+
+# https://circleci.com/blog/how-to-build-a-docker-image-on-circleci-2-0/
+jobs:
+  build:
+    working_directory: /app
+    docker:
+      - image: docker:17.09.0-ce-git
+    steps:
+      - checkout
+      - setup_remote_docker
+      - restore_cache:
+          keys:
+            - v1-{{ .Branch }}
+          paths:
+            - /caches/innodb_ruby.tar
+      - run:
+          name: Load Docker image layer cache
+          command: |
+            set +o pipefail
+            docker load -i /caches/innodb_ruby.tar | true
+      - run:
+          name: Build innodb_ruby Docker image
+          command: |
+            docker build --cache-from=innodb_ruby -t yokogawa/innodb_ruby .
+      - run:
+          name: Setup container-structure-test
+          command: |
+            curl -L https://storage.googleapis.com/container-structure-test/latest/container-structure-test -o /usr/local/bin/container-structure-test
+            chmod +x /usr/local/bin/container-structure-test
+      - run:
+          name: Run spec
+          command: |
+            spec/spec.sh
+      - run:
+          name: Save Docker image layer cache
+          command: |
+            mkdir -p /caches
+            docker save -o /caches/innodb_ruby.tar yokogawa/innodb_ruby
+      - save_cache:
+          key: v1-{{ .Branch }}-{{ epoch }}
+          paths:
+            - /caches/innodb_ruby.tar
+
+workflows:
+  version: 2
+  commit-workflow:
+    jobs:
+      - build
+
